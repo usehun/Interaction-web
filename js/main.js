@@ -11,6 +11,14 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-0"),
+        messageA: document.querySelector("#scroll-section-0 .main-message.a"),
+        messageB: document.querySelector("#scroll-section-0 .main-message.b"),
+        messageC: document.querySelector("#scroll-section-0 .main-message.c"),
+        messageD: document.querySelector("#scroll-section-0 .main-message.d"),
+      },
+
+      values: {
+        messageA_opacity: [0, 1],
       },
     },
     {
@@ -51,6 +59,19 @@
         i
       ].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
+
+    yOffset = window.pageYOffset;
+    let totalScrollheight = 0;
+    for (let i = 0; i < sceneInfo.length; i++) {
+      totalScrollheight += sceneInfo[i].scrollHeight;
+
+      if (totalScrollheight >= yOffset) {
+        currentScene = i;
+        break;
+      }
+    }
+
+    document.body.setAttribute("id", `show-scene-${currentScene}`);
   }
 
   function scrollLoop() {
@@ -61,19 +82,34 @@
 
     if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       currentScene++;
+      document.body.setAttribute("id", `show-scene-${currentScene}`);
     }
 
     if (yOffset < prevScrollHeight) {
       if (currentScene === 0) return; // 브라우저 바운스 효과로 인해 마이너스가 되는 것을 방지(모바일)
       currentScene--;
+      document.body.setAttribute("id", `show-scene-${currentScene}`);
+    }
+
+    function playAnimation() {
+      switch (currentScene) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+      }
     }
   }
 
-  window.addEventListener("resize", setLayout);
   window.addEventListener("scroll", () => {
     yOffset = window.pageYOffset;
     scrollLoop();
   });
-
-  setLayout();
+  // window.addEventListener("DOMContentLoaded", setLayout);
+  window.addEventListener("load", setLayout);
+  window.addEventListener("resize", setLayout);
 })();

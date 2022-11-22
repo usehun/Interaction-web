@@ -69,6 +69,7 @@ a {
 }
 
 .scroll-section {
+  border: 2px solid red;
   padding-top: 50vh;
 }
 
