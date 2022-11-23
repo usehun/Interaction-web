@@ -18,7 +18,7 @@
       },
 
       values: {
-        messageA_opacity: [0, 1],
+        messageA_opacity: [200, 700],
       },
     },
     {
@@ -70,13 +70,44 @@
         break;
       }
     }
-
     document.body.setAttribute("id", `show-scene-${currentScene}`);
+  }
+
+  function calcValues(values, currentYOffset) {
+    let rv;
+    // 현재 씬(스크롤섹션)에서 스크롤된 범위를 비율로 구하기
+    let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+
+    rv = parseInt(scrollRatio * (values[1] - values[0]));
+    return rv;
+  }
+
+  function playAnimation() {
+    const objs = sceneInfo[currentScene].objs;
+    const values = sceneInfo[currentScene].values;
+    const currentYOffset = yOffset - prevScrollHeight;
+
+    switch (currentScene) {
+      case 0:
+        console.log(calcValues(values.messageA_opacity, currentYOffset));
+        // let messageA_opacity_0 = values.messageA_opacity[0];
+        // let messageA_opacity_1 = values.messageA_opacity[1];
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
   }
 
   function scrollLoop() {
     prevScrollHeight = 0;
     for (let i = 0; i < currentScene; i++) {
+      // 이전 진행된 스크롤 값 = i번째 sceneInfo의 scrollHeight값.
+      // prevScrollHeight = prevScrollHeight + sceneInfo[i].scrollHeight;
+      // += -> 왼쪽의 피연산자에 오른쪽의 피연산자를 더한 후, 그 결괏값을 왼쪽의 피연산자에 대입함.
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
@@ -91,18 +122,7 @@
       document.body.setAttribute("id", `show-scene-${currentScene}`);
     }
 
-    function playAnimation() {
-      switch (currentScene) {
-        case 0:
-          break;
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          break;
-      }
-    }
+    playAnimation();
   }
 
   window.addEventListener("scroll", () => {
@@ -113,3 +133,5 @@
   window.addEventListener("load", setLayout);
   window.addEventListener("resize", setLayout);
 })();
+
+// console.log("dgsfs");
