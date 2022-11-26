@@ -44,6 +44,7 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-1"),
+        content: document.querySelector("#scroll-section-1 .description"),
       },
     },
     {
@@ -87,7 +88,9 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-3"),
+        canvasCaption: document.querySelector(".canvas-caption"),
       },
+      values: {},
     },
   ];
 
@@ -97,7 +100,8 @@
       if (sceneInfo[i].type === "sticky") {
         sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
       } else if (sceneInfo[i].type === "normal") {
-        sceneInfo[i].scrollHeight = sceneInfo[i].objs.container.offsetHight;
+        sceneInfo[i].scrollHeight =
+          sceneInfo[i].objs.container.offsetHight + window.innerHeight * 0.5;
       }
       sceneInfo[
         i
@@ -255,16 +259,97 @@
             currentYOffset
           )}%, 0)`;
         }
-
         break;
 
-        // values[1], values[0]을 구하여서 밑에 식은 필요없다
-        // let messageA_opacity_0 = values.messageA_opacity[0];
-        // let messageA_opacity_1 = values.messageA_opacity[1];
-        break;
+      // values[1], values[0]을 구하여서 밑에 식은 필요없다
+      // let messageA_opacity_0 = values.messageA_opacity[0];
+      // let messageA_opacity_1 = values.messageA_opacity[1];
       case 1:
         break;
       case 2:
+        // console.log('2 play');
+        if (scrollRatio <= 0.25) {
+          // in
+          objs.messageA.style.opacity = calcValues(
+            values.messageA_opacity_in,
+            currentYOffset
+          );
+          objs.messageA.style.transform = `translate3d(0, ${calcValues(
+            values.messageA_translateY_in,
+            currentYOffset
+          )}%, 0)`;
+        } else {
+          // out
+          objs.messageA.style.opacity = calcValues(
+            values.messageA_opacity_out,
+            currentYOffset
+          );
+          objs.messageA.style.transform = `translate3d(0, ${calcValues(
+            values.messageA_translateY_out,
+            currentYOffset
+          )}%, 0)`;
+        }
+
+        if (scrollRatio <= 0.57) {
+          // in
+          objs.messageB.style.transform = `translate3d(0, ${calcValues(
+            values.messageB_translateY_in,
+            currentYOffset
+          )}%, 0)`;
+          objs.messageB.style.opacity = calcValues(
+            values.messageB_opacity_in,
+            currentYOffset
+          );
+          objs.pinB.style.transform = `scaleY(${calcValues(
+            values.pinB_scaleY,
+            currentYOffset
+          )})`;
+        } else {
+          // out
+          objs.messageB.style.transform = `translate3d(0, ${calcValues(
+            values.messageB_translateY_out,
+            currentYOffset
+          )}%, 0)`;
+          objs.messageB.style.opacity = calcValues(
+            values.messageB_opacity_out,
+            currentYOffset
+          );
+          objs.pinB.style.transform = `scaleY(${calcValues(
+            values.pinB_scaleY,
+            currentYOffset
+          )})`;
+        }
+
+        if (scrollRatio <= 0.83) {
+          // in
+          objs.messageC.style.transform = `translate3d(0, ${calcValues(
+            values.messageC_translateY_in,
+            currentYOffset
+          )}%, 0)`;
+          objs.messageC.style.opacity = calcValues(
+            values.messageC_opacity_in,
+            currentYOffset
+          );
+          objs.pinC.style.transform = `scaleY(${calcValues(
+            values.pinC_scaleY,
+            currentYOffset
+          )})`;
+        } else {
+          // out
+          objs.messageC.style.transform = `translate3d(0, ${calcValues(
+            values.messageC_translateY_out,
+            currentYOffset
+          )}%, 0)`;
+          objs.messageC.style.opacity = calcValues(
+            values.messageC_opacity_out,
+            currentYOffset
+          );
+          objs.pinC.style.transform = `scaleY(${calcValues(
+            values.pinC_scaleY,
+            currentYOffset
+          )})`;
+        }
+
         break;
       case 3:
         break;
@@ -307,5 +392,3 @@
   window.addEventListener("load", setLayout);
   window.addEventListener("resize", setLayout);
 })();
-
-// console.log("dgsfs");
