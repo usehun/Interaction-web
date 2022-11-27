@@ -101,7 +101,7 @@
         sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
       } else if (sceneInfo[i].type === "normal") {
         sceneInfo[i].scrollHeight =
-          sceneInfo[i].objs.container.offsetHight + window.innerHeight * 0.5;
+          sceneInfo[i].objs.container.offsetHeight + window.innerHeight * 0.5;
       }
       sceneInfo[
         i
