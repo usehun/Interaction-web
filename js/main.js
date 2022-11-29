@@ -136,6 +136,9 @@
       }
     }
     document.body.setAttribute("id", `show-scene-${currentScene}`);
+
+    const heightRatio = window.innerHeight / 1080;
+    sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
   }
 
   // calcValues함수는 구역의 스코롤된 범위와 스크롤을 하는 만큼의 값의 비율 증감 담당(?)
@@ -189,6 +192,12 @@
         // console.log(calcValues(values.messageA_opacity_in, currentYOffset));
 
         // console.log('0 play');
+
+        let sequence = Math.round(
+          calcValues(values.imageSequence, currentYOffset)
+        );
+        objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+
         if (scrollRatio <= 0.22) {
           // in
           objs.messageA.style.opacity = calcValues(
