@@ -3,6 +3,10 @@
   let prevScrollHeight = 0; // 현재 스크롤 위치 (yOffset)보다 이전에 위치한 스크롤 섹션들의 높이값의 합
   let currentScene = 0; // 현재 활성화된(눈 앞에 보고있는) 씬(scroll-section)
   let enterNewScene = false; // 새로운 scene이  시작되는 순간 true
+  let acc = 0.1; // 가속도
+  let delayedYOffset = 0;
+  let rafId;
+  let rafState;
 
   const sceneInfo = [
     {
@@ -239,10 +243,10 @@
 
         // console.log('0 play');
 
-        let sequence = Math.round(
-          calcValues(values.imageSequence, currentYOffset)
-        );
-        objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+        // let sequence = Math.round(
+        //   calcValues(values.imageSequence, currentYOffset)
+        // );
+        // objs.context.drawImage(objs.videoImages[sequence], 0, 0);
         objs.canvas.style.opacity = calcValues(
           values.canvas_opacity,
           currentYOffset
@@ -677,10 +681,37 @@
     playAnimation();
   }
 
+  function loop() {
+    delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+    const currentYOffset = delayedYOffset - prevScrollHeight;
+    const values = sceneInfo[currentScene].values;
+    const objs = sceneInfo[currentScene].objs;
+
+    if (currentScene === 0) {
+      let sequence = Math.round(
+        calcValues(values.imageSequence, currentYOffset)
+      );
+      objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+    }
+
+    rafId = requestAnimationFrame(loop);
+
+    if (Math.abs(yOffset - delayedYOffset) < 1) {
+      cancelAnimationFrame(rafId);
+      rafState = false;
+    }
+  }
+
   window.addEventListener("scroll", () => {
     yOffset = window.pageYOffset;
     scrollLoop();
     checkMenu();
+
+    if (!rafState) {
+      rafId = requestAnimationFrame(loop);
+      rafState = ture;
+    }
   });
   // window.addEventListener("DOMContentLoaded", setLayout);
   window.addEventListener("load", () => {

@@ -90,6 +90,20 @@
 
     네비게이션 바에 백드롭 필터를 추가하였고 로컬 네비게이션은 스크롤 후에도 고정을 두었다.
 
+### 부드러운 감속 비디오 적용
+
+    let acc = 0.1; // 가속도
+    let delayedYOffset = 0;
+
+    delayedYOffset = yOffset + (yOffset - delayedYOffset) * acc;
+
+    현재 거리와 이동후 스크롤간의 거리에 0.1씩 곱하며 현재 거리를 더해는 방법으로 부드러운 감속 이미지를 만들어준다.
+
+    조건문을 사용하여 절대값을 씌운 거리오차가 1미만일 경우 requestAnimationFrame 작업을 멈춰주고(성능 개선) rafState = false;
+    스크롤 이벤트에 !rafState 일때 다시 requestAnimationFrame 실행하고 rafState = ture;
+
+#### 2022-12-08 부드러운 감속 비디오 적용(requestAnimationFrame)
+
 #### 2022-12-07 이미지 블렌딩 후 캔버스 스크롤로 변경과 크기변경, 캔버스 스크롤로 변경 후 나타나는 내용 효과 추가, CSS작업
 
 #### 2022-12-06 이미지 블렌딩 추가
