@@ -102,6 +102,20 @@
     조건문을 사용하여 절대값을 씌운 거리오차가 1미만일 경우 requestAnimationFrame 작업을 멈춰주고(성능 개선) rafState = false;
     스크롤 이벤트에 !rafState 일때 다시 requestAnimationFrame 실행하고 rafState = ture;
 
+### 디버깅
+
+    Scene이 바뀌는 순간에 건너뛰는 조건문 추가. (enterNewScene = false)
+
+    scene의 변경이 yOffset으로 인해 발생하여 prevScrollHeight의 시점이 잠깐동안 delayedYOffset에 맞춰주지 못해 yOffset -> delayedYOffset 변경
+
+    윈도우의 width가 600보다 클 경우 resize 이벤트를 실행하고
+    모바일 기기의 방향을 회전했을 때 resize 이벤트를 실행한다.
+
+    sceneInfo[3] case3에서 창사이즈 변경이 일어났을 때 크기가 안 맞는 상황을 대비하여
+    sceneInfo[3].values.rectStartY = 0을 resize 이벤트를 실행할 때 지정해준다.
+
+#### 2022-12-12 디버깅, SVG로딩 애니메이션 준비
+
 #### 2022-12-08 부드러운 감속 비디오 적용(requestAnimationFrame)
 
 #### 2022-12-07 이미지 블렌딩 후 캔버스 스크롤로 변경과 크기변경, 캔버스 스크롤로 변경 후 나타나는 내용 효과 추가, CSS작업

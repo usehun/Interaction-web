@@ -349,10 +349,10 @@
       case 2:
         // console.log('2 play');
 
-        let sequence2 = Math.round(
-          calcValues(values.imageSequence, currentYOffset)
-        );
-        objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
+        // let sequence2 = Math.round(
+        //   calcValues(values.imageSequence, currentYOffset)
+        // );
+        // objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
 
         if (scrollRatio <= 0.5) {
           // in
@@ -663,13 +663,16 @@
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
-    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+    if (
+      delayedYOffset >
+      prevScrollHeight + sceneInfo[currentScene].scrollHeight
+    ) {
       enterNewScene = true;
       currentScene++;
       document.body.setAttribute("id", `show-scene-${currentScene}`);
     }
 
-    if (yOffset < prevScrollHeight) {
+    if (delayedYOffset < prevScrollHeight) {
       enterNewScene = true;
       if (currentScene === 0) return; // 브라우저 바운스 효과로 인해 마이너스가 되는 것을 방지(모바일)
       currentScene--;
@@ -684,15 +687,19 @@
   function loop() {
     delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
 
-    const currentYOffset = delayedYOffset - prevScrollHeight;
-    const values = sceneInfo[currentScene].values;
-    const objs = sceneInfo[currentScene].objs;
+    if (!enterNewScene) {
+      if (currentScene === 0 || currentScene === 2) {
+        const currentYOffset = delayedYOffset - prevScrollHeight;
+        const values = sceneInfo[currentScene].values;
+        const objs = sceneInfo[currentScene].objs;
 
-    if (currentScene === 0) {
-      let sequence = Math.round(
-        calcValues(values.imageSequence, currentYOffset)
-      );
-      objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+        let sequence = Math.round(
+          calcValues(values.imageSequence, currentYOffset)
+        );
+        if (objs.videoImages[sequence]) {
+          objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+        }
+      }
     }
 
     rafId = requestAnimationFrame(loop);
@@ -710,7 +717,7 @@
 
     if (!rafState) {
       rafId = requestAnimationFrame(loop);
-      rafState = ture;
+      rafState = true;
     }
   });
   // window.addEventListener("DOMContentLoaded", setLayout);
@@ -718,5 +725,13 @@
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
   });
-  window.addEventListener("resize", setLayout);
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 600) {
+      setLayout();
+    }
+
+    sceneInfo[3].values.rectStartY = 0; // 사이즈 변경이 일어났을 때 rectStartY 값을 다시 초기화 시켜 sceneInfo[3]의 값을 다시 지정해준다.
+  });
+
+  window.addEventListener("orientationchange", setLayout);
 })();
