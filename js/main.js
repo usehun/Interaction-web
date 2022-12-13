@@ -150,8 +150,6 @@
     }
   }
 
-  setCanvasImages();
-
   function checkMenu() {
     if (yOffset > 44) {
       document.body.classList.add("local-nav-sticky");
@@ -664,11 +662,25 @@
     }
 
     if (
+      delayedYOffset <
+      prevScrollHeight + sceneInfo[currentScene].scrollHeight
+    ) {
+      document.body.classList.remove("scroll-effect-end");
+    }
+
+    if (
       delayedYOffset >
       prevScrollHeight + sceneInfo[currentScene].scrollHeight
     ) {
       enterNewScene = true;
-      currentScene++;
+
+      if (currentScene === sceneInfo.length - 1) {
+        document.body.classList.add("scroll-effect-end");
+      }
+
+      if (currentScene < sceneInfo.length - 1) {
+        currentScene++;
+      }
       document.body.setAttribute("id", `show-scene-${currentScene}`);
     }
 
@@ -710,28 +722,60 @@
     }
   }
 
-  window.addEventListener("scroll", () => {
-    yOffset = window.pageYOffset;
-    scrollLoop();
-    checkMenu();
-
-    if (!rafState) {
-      rafId = requestAnimationFrame(loop);
-      rafState = true;
-    }
-  });
   // window.addEventListener("DOMContentLoaded", setLayout);
   window.addEventListener("load", () => {
+    document.body.classList.remove("before-load");
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
-  });
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 600) {
-      setLayout();
+
+    let tempYOffset = yOffset;
+    let tempScrollCount = 0;
+    if (yOffset > 0) {
+      let siID = setInterval(() => {
+        window.scrollTo(0, tempYOffset);
+        tempYOffset += 1;
+
+        if (tempScrollCount > 15) {
+          clearInterval(siID);
+        }
+        tempScrollCount++;
+      }, 20);
     }
 
-    sceneInfo[3].values.rectStartY = 0; // 사이즈 변경이 일어났을 때 rectStartY 값을 다시 초기화 시켜 sceneInfo[3]의 값을 다시 지정해준다.
+    window.addEventListener("scroll", () => {
+      yOffset = window.pageYOffset;
+      scrollLoop();
+      checkMenu();
+
+      if (!rafState) {
+        rafId = requestAnimationFrame(loop);
+        rafState = true;
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) {
+        window.location.reload();
+
+        // setLayout();
+
+        // sceneInfo[3].values.rectStartY = 0; // 사이즈 변경이 일어났을 때 rectStartY 값을 다시 초기화 시켜 sceneInfo[3]의 값을 다시 지정해준다.
+      }
+    });
+
+    window.addEventListener("orientationchange", () => {
+      scrollTo(0, 0);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    });
+
+    document
+      .querySelector(".loading")
+      .addEventListener("transitionend", (e) => {
+        document.body.removeChild(e.currentTarget);
+      });
   });
 
-  window.addEventListener("orientationchange", setLayout);
+  setCanvasImages();
 })();
